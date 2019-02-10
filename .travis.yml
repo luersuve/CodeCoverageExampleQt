@@ -1,0 +1,30 @@
+language: cpp
+os: osx
+sudo: required
+compiler: clang
+env:
+  - CODECOV_TOKEN="02ea1c48-b8b9-429a-bbea-f7b5c794eca6"
+
+install:
+  - brew install qt5
+  - export QT_DIR=/usr/local/opt/qt
+  - export PATH=$QT_DIR/bin:$PATH
+  - export LDFLAGS=-L$QT_DIR/lib
+  - export CPPFLAGS=-I$QT_DIR/include
+  - brew install lcov
+
+
+script:
+  - cd CodeCoverageExample
+  - qmake CodeCoverageExample.pro
+  - make -j2
+  - 
+
+after_success:
+  - find .
+  - ./CodeCoverageExample
+  - find .
+  - cd scripts
+  - chmod +x runCoverage.sh
+  - ./runCoverage.sh
+  - bash <(curl -s https://codecov.io/bash)
